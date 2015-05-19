@@ -26,7 +26,7 @@ public class IteratorDemo {
 		while (iterator2.hasNext()) {
 			Object element = iterator2.next();
 			System.out.println("remove÷Æ«∞£∫" + element);
-			iterator2.remove();
+			iterator2.remove();			
 		}
 		Iterator iterator3 = collection.iterator();
 		if (!iterator3.hasNext()) {
