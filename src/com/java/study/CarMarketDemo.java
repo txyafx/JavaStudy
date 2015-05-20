@@ -15,21 +15,51 @@ public class CarMarketDemo {
 	public static void main(String[] args) {
 		Market market = new Market();
 		People bob = new People(new Certificate(100), "bob", 20000.0);
-		Car bobcar = new Car("123", 10000.0, "red");
+		Car bobcar = new Car("1", 10000.0, "red");
 		bobcar.setOwner(bob);
 		bob.addCar(bobcar);
 
 		People tom = new People(new Certificate(101), "tom", 50000.0);
-		Car tomcar1 = new Car("125", 12000.0, "green");
+		Car tomcar1 = new Car("2", 12000.0, "green");
 		tomcar1.setOwner(tom);
-		Car tomcar2 = new Car("126", 13000.0, "blue");
+		Car tomcar2 = new Car("3", 13000.0, "blue");
 		tomcar2.setOwner(tom);
 
 		tom.addCar(tomcar1);
 		tom.addCar(tomcar2);
 
+		market.registCar(bobcar);
+		market.registCar(tomcar1);
+		market.registCar(tomcar2);
+		market.addPeople(bob);
+		market.addPeople(tom);
+
+		market.toString();
+
+		System.out.println("交易前的车辆情况：");
 		bob.printCars();
 		tom.printCars();
+		System.out.println();
+
+		if (!market.sellCar(tom, tomcar1, bob)) {
+			System.out.println("tom sell " + tomcar1.toString()
+					+ " to bob failed.");
+		}
+		System.out.println("交易后的车辆情况：");
+		bob.printCars();
+		tom.printCars();
+		System.out.println();
+
+		if (!market.sellCar(tom, tomcar1, bob)) {
+			System.out.println("tom sell " + tomcar1.toString()
+					+ " to bob failed.");
+		}
+		System.out.println("交易后的车辆情况：");
+		bob.printCars();
+		tom.printCars();
+		System.out.println();
+
+		market.toString();
 	}
 
 }
@@ -44,8 +74,7 @@ class Market {
 	}
 
 	public static boolean sellCar(People p1, Car car, People p2) {
-		p2.buyCarFromPeople(car, p1);
-		return false;
+		return p2.buyCarFromPeople(car, p1);
 	}
 
 	public void addPeople(People people) {
@@ -62,6 +91,16 @@ class Market {
 			this.cars.addAll(cars);
 		}
 		return false;
+	}
+
+	public String toString() {
+		Iterator iterator = people.keySet().iterator();
+		while (iterator.hasNext()) {
+			People p = (People) people.get(iterator.next());
+			p.printCars();
+		}
+
+		return null;
 	}
 }
 
@@ -110,15 +149,19 @@ class People {
 
 	public boolean buyCar(Car car) {
 		if (car.getPrice() > this.cash) {
-			tradeMsg = "[" + car.toString() + "]" + "'s price is out of "
-					+ name + "'s cash.";
+			tradeMsg = "buyCar => " + "[" + car.toString() + "]"
+					+ "'s price is out of " + name + "'s cash.";
+			System.out.println(tradeMsg);
 			return false;
 		}
+
 		if (cars.contains(car)) {
-			tradeMsg = "[" + car.toString() + "]" + " is " + name
-					+ "'s owner car.";
+			tradeMsg = "buyCar => " + "[" + car.toString() + "]" + " is "
+					+ name + "'s owner car.";
+			System.out.println(tradeMsg);
 			return false;
 		}
+
 		this.addCar(car);
 		car.setOwner(this);
 		this.cash -= car.getPrice();
@@ -131,8 +174,9 @@ class People {
 			this.removeCar(car);
 			return true;
 		}
-		tradeMsg = "[" + car.toString() + "]" + " is not " + name
-				+ "'s owner car.";
+		tradeMsg = "sellCar => " + "[" + car.toString() + "]" + " is not "
+				+ name + "'s owner car.";
+		System.out.println(tradeMsg);
 		return false;
 	}
 
@@ -240,7 +284,7 @@ class Car {
 	public boolean equals(Object obj) {
 		if (obj instanceof Car) {
 			Car car = (Car) obj;
-			return car.id.equals(car.id);
+			return this.id.equals(car.id);
 		}
 		return false;
 	}
