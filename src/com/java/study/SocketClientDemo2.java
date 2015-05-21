@@ -21,7 +21,7 @@ public class SocketClientDemo2 extends Socket {
 		out = new PrintWriter(this.getOutputStream(), true);
 
 		new readLineThread();
-		
+
 		while (true) {
 			/*
 			 * stdin ==> socket
@@ -62,7 +62,7 @@ public class SocketClientDemo2 extends Socket {
 				client.close();
 			} catch (Exception e) {
 				e.printStackTrace();
-			}finally {
+			} finally {
 				System.out.println("exit client read line thread.");
 			}
 		}
